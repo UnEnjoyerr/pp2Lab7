@@ -47,16 +47,27 @@ while running:
         if event.type == pygame.QUIT: 
             running = False
 
+        # keyboard controlls
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_p]:
+                play_music()
+        if pressed[pygame.K_s]:
+                stop_music()
+        if pressed[pygame.K_n]:
+                next_track()
+        if pressed[pygame.K_b]:
+                previous_track()
         # Check for mouse clicks
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
+            
             if play_button.get_rect(topleft=(50, 50)).collidepoint(mouse_pos):
                 play_music()
-            elif stop_button.get_rect(topleft=(200, 50)).collidepoint(mouse_pos):
+            if stop_button.get_rect(topleft=(200, 50)).collidepoint(mouse_pos):
                 stop_music()
-            elif next_button.get_rect(topleft=(50, 150)).collidepoint(mouse_pos):
+            if next_button.get_rect(topleft=(50, 150)).collidepoint(mouse_pos):
                 next_track()
-            elif previous_button.get_rect(topleft=(200, 150)).collidepoint(mouse_pos):
+            if previous_button.get_rect(topleft=(200, 150)).collidepoint(mouse_pos):
                 previous_track()
 
     screen.fill((0, 0, 0))  
