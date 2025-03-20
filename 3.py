@@ -1,70 +1,42 @@
 import pygame
-import os
+
+def do_nice_outlines(surface):
+    color = (0, 255, 0)  # green
+    # draw a rectangle
+    pygame.draw.rect(surface, color, pygame.Rect(0, -9, 600, 10))
+    pygame.draw.rect(surface, color, pygame.Rect(-9, 1, 10, 600))
+    pygame.draw.rect(surface, color, pygame.Rect(599, 1, 10, 599))
+    pygame.draw.rect(surface, color, pygame.Rect(0, 599, 600, 10))
+
 pygame.init()
-pygame.mixer.init()
+screen = pygame.display.set_mode((600, 600))  # resolution
+done = False  # for while loop in game
+x = 300  # starting position on x/y axis
+y = 300
 
-music_tracks = ['Anosognosia.mp3', 'Clockwork birds.mp3', 'Murmurations.mp3']
-current_track_index = 0
+clock = pygame.time.Clock()  # store ticks
+radius = 25  # radius of the ball
 
-pygame.mixer.music.load(music_tracks[current_track_index])
-
-
-screen = pygame.display.set_mode((400, 300))
-pygame.display.set_caption("Simple Music Player")
-
-play_button = pygame.image.load('play.png')
-stop_button = pygame.image.load('stop.png')
-next_button = pygame.image.load('next.png')
-previous_button = pygame.image.load('previous.png')
-
-button_width = 100
-button_height = 50
-
-def draw_button(image, x, y):
-    screen.blit(image, (x, y))
-
-def play_music():
-    pygame.mixer.music.play()
-
-def stop_music():
-    pygame.mixer.music.stop()
-
-def next_track():
-    global current_track_index
-    current_track_index = (current_track_index + 1) % len(music_tracks)
-    pygame.mixer.music.load(music_tracks[current_track_index])
-    play_music()
-
-def previous_track():
-    global current_track_index
-    current_track_index = (current_track_index - 1) % len(music_tracks)
-    pygame.mixer.music.load(music_tracks[current_track_index])
-    play_music()
-
-running = True
-while running:
+while not done:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: 
-            running = False
+        if event.type == pygame.QUIT:  # Exiting
+            done = True
 
-        # Check for mouse clicks
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if play_button.get_rect(topleft=(50, 50)).collidepoint(mouse_pos):
-                play_music()
-            elif stop_button.get_rect(topleft=(200, 50)).collidepoint(mouse_pos):
-                stop_music()
-            elif next_button.get_rect(topleft=(50, 150)).collidepoint(mouse_pos):
-                next_track()
-            elif previous_button.get_rect(topleft=(200, 150)).collidepoint(mouse_pos):
-                previous_track()
+    pressed = pygame.key.get_pressed()  # Movement
+    if pressed[pygame.K_UP] and y - radius > 0:  # Check upper boundary
+        y -= 20
+    if pressed[pygame.K_DOWN] and y + radius < 600:  # Check lower boundary
+        y += 20
+    if pressed[pygame.K_LEFT] and x - radius > 0:  # Check left boundary
+        x -= 20
+    if pressed[pygame.K_RIGHT] and x + radius < 600:  # Check right boundary
+        x += 20
 
-    screen.fill((0, 0, 0))  
-
-    # Draw buttons
-    draw_button(play_button, 50, 50)
-    draw_button(stop_button, 200, 50)
-    draw_button(next_button, 50, 150)
-    draw_button(previous_button, 200, 150)
+    screen.fill((255, 255, 255))  # filling white
+    color = (255, 0, 0)  # red color
+    pygame.draw.circle(screen, color, (x, y), radius)  # Draw the ball
+    do_nice_outlines(screen)
     pygame.display.flip()
+    clock.tick(60)
+
 pygame.quit()
